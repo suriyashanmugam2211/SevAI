@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SevAI — Find Government Schemes You Deserve</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #E85D04;
+    --orange-light: #F48C06;
+    --orange-pale: #FFF3E0;
+    --green-dark: #1B4332;
+    --cream: #FAF7F2;
+    --cream-dark: #F0EBE3;
+    --text: #1A1A1A;
+    --text-muted: #6B6B6B;
+    --white: #FFFFFF;
+    --border: #E5DDD5;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
+  .nav-logo-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--orange); display: grid; place-items: center; font-size: 18px; color: white; }
+  .nav-logo span { font-size: 20px; font-weight: 700; color: var(--text); }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a { text-decoration: none; font-size: 15px; font-weight: 500; color: var(--text-muted); transition: color .2s; cursor: pointer; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.active-tab { background: var(--orange); color: white; padding: 8px 20px; border-radius: 20px; }
+  .btn-nav { background: var(--orange); color: white; border: none; padding: 10px 22px; border-radius: 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s, transform .1s; }
+  .btn-nav:hover { background: var(--orange-light); transform: translateY(-1px); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero { min-height: calc(100vh - 64px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px 60px; background: linear-gradient(160deg, #FFF9F5 0%, #FAF7F2 60%, #F3EDE4 100%); }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--green-dark); color: white; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px; margin-bottom: 32px; animation: fadeDown .6s ease both; }
+  .hero-badge::before { content: '✦'; font-size: 10px; opacity: .7; }
+  .hero-h1 { font-family: 'Fraunces', serif; font-size: clamp(42px, 6vw, 72px); font-weight: 900; line-height: 1.05; color: var(--text); margin-bottom: 8px; animation: fadeUp .7s .1s ease both; }
+  .hero-h1 span { color: var(--orange); font-style: italic; }
+  .hero-sub { max-width: 580px; font-size: 17px; line-height: 1.65; color: var(--text-muted); margin: 24px auto 44px; animation: fadeUp .7s .2s ease both; }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; animation: fadeUp .7s .3s ease both; }
+  .btn-primary { background: var(--orange); color: white; border: none; padding: 14px 30px; border-radius: 30px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background .2s, transform .15s, box-shadow .2s; box-shadow: 0 4px 18px rgba(232,93,4,.35); }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,93,4,.4); }
+  .btn-secondary { background: transparent; color: var(--text); border: 2px solid var(--border); padding: 14px 30px; border-radius: 30px; font-size: 15px; font-weight: 600; cursor: pointer; transition: border-color .2s, transform .15s; }
+  .btn-secondary:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+
+  /* STATS */
+  .stats-bar { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr); padding: 32px 60px; }
+  .stat-item { text-align: center; padding: 12px; }
+  .stat-num { font-family: 'Fraunces', serif; font-size: 40px; font-weight: 900; color: var(--orange); }
+  .stat-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+  /* HOW IT WORKS */
+  .section { padding: 80px 60px; }
+  .section-header { text-align: center; margin-bottom: 56px; }
+  .section-header h2 { font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 800; }
+  .section-header p { color: var(--text-muted); font-size: 16px; margin-top: 10px; }
+  .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto; }
+  .step-card { background: var(--white); border-radius: 20px; padding: 32px; border: 1px solid var(--border); position: relative; overflow: hidden; transition: transform .25s, box-shadow .25s; }
+  .step-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .step-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--orange-pale); display: grid; place-items: center; font-size: 22px; margin-bottom: 24px; }
+  .step-num { position: absolute; top: 20px; right: 24px; font-family: 'Fraunces', serif; font-size: 56px; font-weight: 900; color: var(--cream-dark); line-height: 1; }
+  .step-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .step-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+  /* SCHEMES */
+  .schemes-section { background: var(--cream); padding: 80px 60px; }
+  .schemes-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  .schemes-header h2 { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; }
+  .schemes-header p { color: var(--text-muted); font-size: 14px; margin-top: 6px; }
+  .view-all { color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
+  .view-all:hover { color: var(--orange); }
+  .schemes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+  .scheme-card { background: var(--white); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); transition: transform .2s, box-shadow .2s; cursor: pointer; }
+  .scheme-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .scheme-tags { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tag { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: var(--orange-pale); color: var(--orange); }
+  .tag.green { background: #E8F5E9; color: #2E7D32; }
+  .scheme-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .scheme-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .scheme-card .benefit { margin-top: 14px; padding: 10px 14px; background: var(--cream); border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--green-dark); display: flex; align-items: center; gap: 6px; }
+
+  /* CTA */
+  .cta-banner { background: var(--orange); text-align: center; padding: 72px 24px; }
+  .cta-banner h2 { font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 48px); font-weight: 900; color: white; margin-bottom: 14px; }
+  .cta-banner p { color: rgba(255,255,255,.85); font-size: 17px; margin-bottom: 36px; }
+  .btn-cta { background: var(--green-dark); color: white; border: none; padding: 16px 36px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: background .2s, transform .15s; }
+  .btn-cta:hover { background: #143727; transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer { background: var(--white); border-top: 1px solid var(--border); padding: 48px 60px 24px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 40px; }
+  .footer-brand p { color: var(--text-muted); font-size: 14px; margin-top: 12px; max-width: 280px; line-height: 1.6; }
+  .footer-col h4 { font-size: 13px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+  .footer-col a { display: block; font-size: 14px; color: var(--text-muted); text-decoration: none; margin-bottom: 10px; transition: color .2s; cursor: pointer; }
+  .footer-col a:hover { color: var(--orange); }
+  .footer-bottom { border-top: 1px solid var(--border); padding-top: 20px; display: flex; justify-content: space-between; }
+  .footer-bottom p { font-size: 13px; color: var(--text-muted); }
+
+  /* ELIGIBILITY */
+  .eligibility-page { min-height: calc(100vh - 64px); background: var(--cream); padding: 60px 24px; }
+  .eligibility-container { max-width: 680px; margin: 0 auto; }
+  .eligibility-container h1 { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+  .eligibility-container > p { color: var(--text-muted); font-size: 15px; margin-bottom: 36px; }
+  .progress-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-bottom: 36px; position: relative; }
+  .progress-steps::before { content: ''; position: absolute; top: 14px; left: 0; right: 0; height: 2px; background: var(--border); z-index: 0; }
+  .prog-step { text-align: center; position: relative; z-index: 1; }
+  .prog-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--white); border: 2px solid var(--border); margin: 0 auto 8px; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--text-muted); transition: all .3s; }
+  .prog-step.active .prog-dot { background: var(--orange); border-color: var(--orange); color: white; }
+  .prog-step.done .prog-dot { background: var(--green-dark); border-color: var(--green-dark); color: white; }
+  .prog-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .prog-step.active .prog-label { color: var(--orange); font-weight: 700; }
+  .form-card { background: var(--white); border-radius: 20px; padding: 36px; border: 1px solid var(--border); }
+  .form-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 28px; }
+  .form-group { margin-bottom: 24px; }
+  .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .form-group input, .form-group select { width: 100%; padding: 13px 16px; border-radius: 12px; border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 15px; background: var(--white); color: var(--text); outline: none; transition: border-color .2s; appearance: none; -webkit-appearance: none; }
+  .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6B6B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 42px; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232,93,4,.1); }
+  .radio-group { display: flex; gap: 12px; flex-wrap: wrap; }
+  .radio-btn { padding: 10px 20px; border-radius: 24px; border: 1.5px solid var(--border); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; background: var(--white); }
+  .radio-btn.selected { background: var(--orange); border-color: var(--orange); color: white; }
+  .radio-btn:hover:not(.selected) { border-color: var(--orange); color: var(--orange); }
+  .form-footer { display: flex; justify-content: flex-end; margin-top: 32px; }
+  .btn-next { background: var(--orange); color: white; border: none; padding: 13px 28px; border-radius: 30px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background .2s, transform .15s, opacity .2s; }
+  .btn-next:hover { background: var(--orange-light); transform: translateY(-1px); }
+  .btn-back { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); padding: 13px 24px; border-radius: 30px; font-size: 15px; font-weight: 600; cursor: pointer; margin-right: 12px; transition: all .2s; }
+  .btn-back:hover { border-color: var(--text); color: var(--text); }
+
+  /* LOADING */
+  .loading-screen { display: none; text-align: center; padding: 60px 24px; }
+  .loader-ring { width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--cream-dark); border-top-color: var(--orange); animation: spin 1s linear infinite; margin: 0 auto 24px; }
+  .loading-screen h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+  .loading-screen p { color: var(--text-muted); }
+
+  /* RESULTS */
+  .result-summary { background: var(--white); border-radius: 16px; padding: 28px; border: 1px solid var(--border); margin-bottom: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .result-summary-item .label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .result-summary-item .val { font-size: 16px; font-weight: 700; }
+  .eligible-count { display: flex; align-items: center; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+  .count-badge { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; }
+  .count-badge .dot { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; }
+  .count-badge .dot.green { background: #E8F5E9; color: #2E7D32; }
+  .count-badge .dot.red { background: #FEEBE8; color: #C62828; }
+  .result-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 14px; overflow: hidden; transition: box-shadow .2s; }
+  .result-card:hover { box-shadow: var(--shadow); }
+  .result-card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; cursor: pointer; }
+  .result-card-left { display: flex; align-items: flex-start; gap: 14px; }
+  .result-icon { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; flex-shrink: 0; }
+  .result-icon.eligible { background: #E8F5E9; color: #2E7D32; }
+  .result-icon.not-eligible { background: #FEEBE8; color: #C62828; }
+  .result-card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .result-card-tags { display: flex; gap: 6px; }
+  .progress-bar-wrap { padding: 0 24px 20px; }
+  .progress-bar-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+  .progress-bar-bg { height: 8px; border-radius: 4px; background: var(--cream-dark); overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 4px; background: var(--orange); transition: width .8s ease; }
+  .result-details { padding: 0 24px 20px; display: none; }
+  .result-details.open { display: block; }
+  .criteria-list { list-style: none; }
+  .criteria-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--cream-dark); color: var(--text-muted); }
+  .criteria-list li:last-child { border-bottom: none; }
+  .criteria-list li .ic { font-size: 14px; flex-shrink: 0; }
+  .criteria-list li.met { color: var(--text); }
+  .chevron { transition: transform .3s; font-size: 18px; color: var(--text-muted); }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* APPLY BUTTON */
+  .btn-apply {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green-dark); color: white;
+    border: none; padding: 11px 22px; border-radius: 24px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    text-decoration: none;
+    transition: background .2s, transform .15s;
+    margin-top: 16px;
+  }
+  .btn-apply:hover { background: #143727; transform: translateY(-1px); }
+
+  /* BROWSE */
+  .browse-page { padding: 60px; }
+  .browse-header { margin-bottom: 36px; }
+  .browse-header h1 { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+  .browse-header p { color: var(--text-muted); }
+  .browse-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+  .filter-btn { padding: 8px 18px; border-radius: 20px; border: 1.5px solid var(--border); font-size: 13px; font-weight: 600; cursor: pointer; background: var(--white); transition: all .2s; color: var(--text-muted); }
+  .filter-btn.active { background: var(--orange); border-color: var(--orange); color: white; }
+  .filter-btn:hover:not(.active) { border-color: var(--orange); color: var(--orange); }
+  .browse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .browse-scheme-card { background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--border); transition: transform .2s, box-shadow .2s; }
+  .browse-scheme-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .scheme-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .scheme-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .scheme-gov { font-size: 12px; color: var(--text-muted); }
+  .scheme-amount { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; color: var(--orange); white-space: nowrap; margin-left: 12px; }
+  .scheme-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; margin-bottom: 16px; }
+  .scheme-eligibility { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .elig-tag { padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; background: var(--cream); color: var(--text-muted); }
+  .btn-apply-browse {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--orange); color: white;
+    border: none; padding: 9px 18px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    text-decoration: none;
+    transition: background .2s, transform .15s;
+  }
+  .btn-apply-browse:hover { background: var(--orange-light); transform: translateY(-1px); }
+
+  /* ─────────────────────────────── CHATBOT ─────────────────────────────── */
+  #chat-fab {
+    position: fixed; bottom: 28px; right: 28px; z-index: 999;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 6px 24px rgba(232,93,4,.45);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    transition: transform .2s, box-shadow .2s;
+    animation: fabPop .5s .8s both;
+  }
+  #chat-fab:hover { transform: scale(1.1); box-shadow: 0 10px 32px rgba(232,93,4,.5); }
+
+  #chat-window {
+    position: fixed; bottom: 100px; right: 28px; z-index: 998;
+    width: 380px; max-height: 560px;
+    background: var(--white); border-radius: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 48px rgba(0,0,0,.14);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transform: scale(.85) translateY(20px);
+    opacity: 0; pointer-events: none;
+    transition: transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+  }
+  #chat-window.open {
+    transform: scale(1) translateY(0);
+    opacity: 1; pointer-events: all;
+  }
+  .chat-header {
+    background: var(--orange);
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .chat-header-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    display: grid; place-items: center; font-size: 20px; flex-shrink: 0;
+  }
+  .chat-header-info .chat-name { color: white; font-size: 15px; font-weight: 700; }
+  .chat-header-info .chat-status { color: rgba(255,255,255,.75); font-size: 12px; }
+  .chat-close { margin-left: auto; background: none; border: none; color: white; font-size: 22px; cursor: pointer; opacity: .8; transition: opacity .2s; line-height: 1; }
+  .chat-close:hover { opacity: 1; }
+
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    scroll-behavior: smooth;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .msg { max-width: 82%; display: flex; flex-direction: column; gap: 4px; animation: msgIn .25s ease both; }
+  .msg.bot { align-self: flex-start; }
+  .msg.user { align-self: flex-end; }
+  .msg-bubble {
+    padding: 10px 14px; border-radius: 18px;
+    font-size: 14px; line-height: 1.55;
+  }
+  .msg.bot .msg-bubble { background: var(--cream); color: var(--text); border-bottom-left-radius: 4px; }
+  .msg.user .msg-bubble { background: var(--orange); color: white; border-bottom-right-radius: 4px; }
+  .msg-time { font-size: 11px; color: var(--text-muted); padding: 0 4px; }
+  .msg.user .msg-time { text-align: right; }
+
+  .chat-typing { display: flex; gap: 5px; align-items: center; padding: 10px 14px; background: var(--cream); border-radius: 18px; border-bottom-left-radius: 4px; width: fit-content; }
+  .chat-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); animation: typeDot 1.2s infinite; }
+  .chat-typing span:nth-child(2) { animation-delay: .2s; }
+  .chat-typing span:nth-child(3) { animation-delay: .4s; }
+
+  .chat-suggestions { padding: 8px 16px; display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--border); }
+  .sug-btn {
+    padding: 6px 12px; border-radius: 14px; border: 1.5px solid var(--border);
+    font-size: 12px; font-weight: 600; cursor: pointer; background: var(--white);
+    color: var(--text-muted); transition: all .2s; white-space: nowrap;
+  }
+  .sug-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .lang-btn {
+    padding: 4px 10px; border-radius: 12px; border: 1.5px solid var(--border);
+    font-size: 12px; font-weight: 600; cursor: pointer; background: var(--white);
+    color: var(--text-muted); transition: all .2s;
+  }
+  .lang-btn.active { background: var(--orange); border-color: var(--orange); color: white; }
+  .lang-btn:hover:not(.active) { border-color: var(--orange); color: var(--orange); }
+
+  .chat-input-row {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: flex-end;
+  }
+  #chat-input {
+    flex: 1; border: 1.5px solid var(--border); border-radius: 20px;
+    padding: 10px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; resize: none; max-height: 80px;
+    transition: border-color .2s;
+  }
+  #chat-input:focus { border-color: var(--orange); }
+  #chat-send {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--orange); border: none; color: white;
+    font-size: 16px; cursor: pointer; display: grid; place-items: center;
+    transition: background .2s, transform .15s; flex-shrink: 0;
+  }
+  #chat-send:hover { background: var(--orange-light); transform: scale(1.05); }
+
+  @keyframes fabPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes typeDot { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown { from { opacity:0; transform: translateY(-16px); } to { opacity:1; transform: none; } }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: none; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 24px; }
+    .section { padding: 60px 24px; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .schemes-grid { grid-template-columns: 1fr; }
+    .browse-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .browse-page { padding: 40px 24px; }
+    .result-summary { grid-template-columns: repeat(2, 1fr); }
+    .schemes-section { padding: 60px 24px; }
+    #chat-window { width: calc(100vw - 32px); right: 16px; bottom: 90px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-icon">📚</div>
+    <span>SevAI</span>
+  </a>
+  <div class="nav-links">
+    <a id="nav-home" class="active-tab" onclick="showPage('home');return false;">Home</a>
+    <a id="nav-check" onclick="showPage('eligibility');return false;">Check Eligibility</a>
+    <a id="nav-browse" onclick="showPage('browse');return false;">Browse Schemes</a>
+  </div>
+  <button class="btn-nav" onclick="showPage('eligibility')">Check Eligibility</button>
+</nav>
+
+<!-- ═══════ HOME ═══════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-badge">AI-Powered Scheme Discovery</div>
+    <h1 class="hero-h1">Find the government schemes<br><span>you deserve</span></h1>
+    <p class="hero-sub">Thousands of students miss scholarships every year simply because they don't know they qualify. SevAI checks your eligibility across all major welfare schemes instantly — no paperwork, no Aadhaar, no complexity.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('eligibility')">Check Your Eligibility →</button>
+      <button class="btn-secondary" onclick="showPage('browse')">Browse All Schemes</button>
+    </div>
+  </section>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">Welfare Schemes</div></div>
+    <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">Categories</div></div>
+    <div class="stat-item"><div class="stat-num">2 min</div><div class="stat-label">To Check Eligibility</div></div>
+    <div class="stat-item"><div class="stat-num">0</div><div class="stat-label">Documents Needed Now</div></div>
+  </div>
+  <section class="section" style="background:var(--white)">
+    <div class="section-header">
+      <h2>How SevAI works</h2>
+      <p>Three simple steps to find your eligible schemes</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-icon">📋</div><div class="step-num">01</div><h3>Enter your details</h3><p>Share basic info — age, income, student status, state. No Aadhaar, no sensitive data.</p></div>
+      <div class="step-card"><div class="step-icon">🔍</div><div class="step-num">02</div><h3>We match instantly</h3><p>Our AI engine checks your profile against all available scheme criteria in seconds.</p></div>
+      <div class="step-card"><div class="step-icon">✅</div><div class="step-num">03</div><h3>Get your results</h3><p>See exactly which schemes you qualify for, what benefits you get, and how to apply.</p></div>
+    </div>
+  </section>
+  <section class="schemes-section">
+    <div class="schemes-header">
+      <div><h2>Available Schemes</h2><p>Currently covering top student welfare schemes</p></div>
+      <a class="view-all" onclick="showPage('browse')">View all →</a>
+    </div>
+    <div class="schemes-grid">
+      <div class="scheme-card" onclick="showPage('browse')"><div class="scheme-tags"><span class="tag">Scholarship</span><span class="tag">Students</span></div><h3>BC/MBC Students Scholarship (Tamil Nadu)</h3><p>Financial assistance for BC/MBC students pursuing higher education in Tamil Nadu government colleges.</p><div class="benefit">🎓 Up to ₹10,000 per year</div></div>
+      <div class="scheme-card" onclick="showPage('browse')"><div class="scheme-tags"><span class="tag">Scholarship</span><span class="tag">Students</span></div><h3>Central Sector Scheme of Scholarships</h3><p>For meritorious students from families with income below ₹8 lakh pursuing regular courses after Class XII.</p><div class="benefit">🎓 ₹10,000–₹20,000 per year</div></div>
+      <div class="scheme-card" onclick="showPage('browse')"><div class="scheme-tags"><span class="tag">Scholarship</span><span class="tag green">SC/ST</span></div><h3>Post Matric Scholarship for SC Students</h3><p>Central government scheme for Scheduled Caste students studying at post-matriculation level.</p><div class="benefit">🎓 Full tuition + maintenance</div></div>
+      <div class="scheme-card" onclick="showPage('browse')"><div class="scheme-tags"><span class="tag">National Scheme</span><span class="tag">Merit</span></div><h3>National Means-cum-Merit Scholarship</h3><p>For economically weaker section students to prevent dropout at Class VIII and continue education.</p><div class="benefit">🎓 ₹12,000 per year</div></div>
+    </div>
+  </section>
+  <div class="cta-banner">
+    <h2>Don't miss out on benefits you deserve</h2>
+    <p>It takes less than 2 minutes. No account needed.</p>
+    <button class="btn-cta" onclick="showPage('eligibility')">Check Eligibility Now →</button>
+  </div>
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="display:inline-flex;cursor:pointer" onclick="showPage('home')">
+          <div class="nav-logo-icon">📚</div>
+          <span style="font-size:18px;font-weight:700;">SevAI</span>
+        </div>
+        <p>Helping students and citizens discover government welfare schemes they're entitled to.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a onclick="showPage('home')">Home</a>
+        <a onclick="showPage('eligibility')">Check Eligibility</a>
+        <a onclick="showPage('browse')">Browse Schemes</a>
+      </div>
+      <div class="footer-col">
+        <h4>Privacy</h4>
+        <a>No Aadhaar required</a>
+        <a>No bank details stored</a>
+        <a>Minimal data collection</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>SevAI — AI Powered Welfare Scheme Assistant. Prototype for demonstration purposes.</p>
+      <p>Minimal user data. Maximum benefit.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════ ELIGIBILITY ═══════ -->
+<div id="page-eligibility" class="page">
+  <div class="eligibility-page">
+    <div class="eligibility-container">
+      <h1>Check Your Eligibility</h1>
+      <p>Fill in your details to see which government schemes you qualify for.</p>
+      <div class="progress-steps" id="progress-steps">
+        <div class="prog-step active" id="step-ind-0"><div class="prog-dot">1</div><div class="prog-label">Basic Info</div></div>
+        <div class="prog-step" id="step-ind-1"><div class="prog-dot">2</div><div class="prog-label">Education</div></div>
+        <div class="prog-step" id="step-ind-2"><div class="prog-dot">3</div><div class="prog-label">Background</div></div>
+        <div class="prog-step" id="step-ind-3"><div class="prog-dot">4</div><div class="prog-label">Income & Category</div></div>
+      </div>
+
+      <div id="form-step-0" class="form-card">
+        <h2>Basic Info</h2>
+        <div class="form-group"><label>Age</label><input type="number" id="f-age" placeholder="e.g. 20" min="1" max="100"></div>
+        <div class="form-group"><label>Gender</label><div class="radio-group" id="rg-gender"><div class="radio-btn" onclick="selectRadio('rg-gender',this,'Male')">Male</div><div class="radio-btn" onclick="selectRadio('rg-gender',this,'Female')">Female</div><div class="radio-btn" onclick="selectRadio('rg-gender',this,'Other')">Other</div></div></div>
+        <div class="form-group"><label>State</label><select id="f-state"><option value="">Select your state</option><option>Tamil Nadu</option><option>Karnataka</option><option>Maharashtra</option><option>Uttar Pradesh</option><option>West Bengal</option><option>Rajasthan</option><option>Madhya Pradesh</option><option>Bihar</option><option>Andhra Pradesh</option><option>Telangana</option><option>Kerala</option><option>Gujarat</option><option>Odisha</option><option>Punjab</option><option>Haryana</option><option>Jharkhand</option><option>Assam</option><option>Chhattisgarh</option><option>Delhi</option><option>Other</option></select></div>
+        <div class="form-footer"><button class="btn-next" onclick="nextStep(0)">Next →</button></div>
+      </div>
+
+      <div id="form-step-1" class="form-card" style="display:none">
+        <h2>Education</h2>
+        <div class="form-group"><label>Currently a Student?</label><div class="radio-group" id="rg-student"><div class="radio-btn" onclick="selectRadio('rg-student',this,'Yes')">Yes</div><div class="radio-btn" onclick="selectRadio('rg-student',this,'No')">No</div></div></div>
+        <div class="form-group"><label>Education Level</label><select id="f-edu"><option value="">Select level</option><option>Class 8 - 10</option><option>Class 11 - 12</option><option>Undergraduate (UG)</option><option>Postgraduate (PG)</option><option>Diploma / ITI</option><option>PhD / Research</option><option>Not studying</option></select></div>
+        <div class="form-group"><label>Type of Institution</label><select id="f-inst"><option value="">Select type</option><option>Government College / School</option><option>Aided Private Institution</option><option>Unaided Private Institution</option><option>Central University / NIT / IIT</option></select></div>
+        <div class="form-footer"><button class="btn-back" onclick="prevStep(1)">← Back</button><button class="btn-next" onclick="nextStep(1)">Next →</button></div>
+      </div>
+
+      <div id="form-step-2" class="form-card" style="display:none">
+        <h2>Background</h2>
+        <div class="form-group"><label>Caste Category</label><select id="f-caste"><option value="">Select category</option><option>General</option><option>OBC</option><option>BC</option><option>MBC</option><option>SC</option><option>ST</option></select></div>
+        <div class="form-group"><label>Religion</label><select id="f-religion"><option value="">Select religion</option><option>Hindu</option><option>Muslim</option><option>Christian</option><option>Sikh</option><option>Buddhist</option><option>Jain</option><option>Other</option></select></div>
+        <div class="form-group"><label>Person with Disability?</label><div class="radio-group" id="rg-pwd"><div class="radio-btn" onclick="selectRadio('rg-pwd',this,'Yes')">Yes</div><div class="radio-btn" onclick="selectRadio('rg-pwd',this,'No')">No</div></div></div>
+        <div class="form-footer"><button class="btn-back" onclick="prevStep(2)">← Back</button><button class="btn-next" onclick="nextStep(2)">Next →</button></div>
+      </div>
+
+      <div id="form-step-3" class="form-card" style="display:none">
+        <h2>Income & Category</h2>
+        <div class="form-group"><label>Annual Family Income (₹)</label><input type="number" id="f-income" placeholder="e.g. 250000" min="0"></div>
+        <div class="form-group"><label>Class 12 / Last Exam Percentage (%)</label><input type="number" id="f-marks" placeholder="e.g. 75" min="0" max="100"></div>
+        <div class="form-group"><label>Whose income are you reporting?</label><select id="f-income-who"><option value="">Select</option><option>Parents / Guardian</option><option>Self</option><option>Household combined</option></select></div>
+        <div class="form-footer"><button class="btn-back" onclick="prevStep(3)">← Back</button><button class="btn-next" onclick="submitForm()">Check Eligibility →</button></div>
+      </div>
+
+      <div id="loading-screen" class="loading-screen" style="display:none">
+        <div class="loader-ring"></div>
+        <h2>Checking your eligibility...</h2>
+        <p>Matching your profile against all available schemes</p>
+      </div>
+
+      <div id="results-screen" style="display:none">
+        <h1 style="font-family:'Fraunces',serif;font-size:32px;font-weight:800;margin-bottom:6px">Your Eligibility Report</h1>
+        <p id="results-sub" style="color:var(--text-muted);margin-bottom:24px"></p>
+        <div class="eligible-count" id="eligible-count"></div>
+        <div class="result-summary" id="result-summary"></div>
+        <div id="no-match-msg" style="display:none;background:var(--white);border-radius:16px;padding:32px;text-align:center;border:1px solid var(--border);margin-bottom:24px">
+          <div style="font-size:32px;margin-bottom:12px">🔍</div>
+          <h3 style="font-size:18px;font-weight:700;margin-bottom:8px">No schemes matched your full criteria</h3>
+          <p style="color:var(--text-muted);font-size:14px">You may still partially qualify for some schemes. See the full breakdown below.</p>
+        </div>
+        <div id="eligible-cards"></div>
+        <h3 style="font-size:16px;font-weight:700;color:var(--text-muted);margin:28px 0 14px" id="other-header"></h3>
+        <div id="other-cards"></div>
+        <div style="margin-top:32px;text-align:center">
+          <button class="btn-primary" onclick="resetForm()" style="margin:0 auto">Check Again →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ BROWSE ═══════ -->
+<div id="page-browse" class="page">
+  <div class="browse-page">
+    <div class="browse-header">
+      <h1>Browse Schemes</h1>
+      <p>All available government welfare schemes in one place</p>
+    </div>
+    <div class="browse-filters">
+      <button class="filter-btn active" onclick="filterSchemes('All',this)">All</button>
+      <button class="filter-btn" onclick="filterSchemes('Scholarship',this)">Scholarship</button>
+      <button class="filter-btn" onclick="filterSchemes('SC/ST',this)">SC / ST</button>
+      <button class="filter-btn" onclick="filterSchemes('OBC',this)">OBC / BC / MBC</button>
+      <button class="filter-btn" onclick="filterSchemes('Merit',this)">Merit Based</button>
+      <button class="filter-btn" onclick="filterSchemes('Tamil Nadu',this)">Tamil Nadu</button>
+    </div>
+    <div class="browse-grid" id="browse-grid"></div>
+  </div>
+</div>
+
+<!-- ═══════ CHATBOT ═══════ -->
+<button id="chat-fab" onclick="toggleChat()" title="Ask SevAI">💬</button>
+
+<div id="chat-window">
+  <div class="chat-header">
+    <div class="chat-header-avatar">🤖</div>
+    <div class="chat-header-info">
+      <div class="chat-name">SevAI Assistant</div>
+      <div class="chat-status" id="chat-status-line">● Online · Ask me about schemes</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">×</button>
+  </div>
+  <div id="lang-picker" style="display:flex;gap:6px;padding:8px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;background:var(--cream)">
+    <span style="font-size:11px;font-weight:700;color:var(--text-muted);align-self:center;margin-right:2px">🌐</span>
+    <button class="lang-btn active" onclick="setLang('en',this)">English</button>
+    <button class="lang-btn" onclick="setLang('ta',this)">தமிழ்</button>
+    <button class="lang-btn" onclick="setLang('hi',this)">हिंदी</button>
+    <button class="lang-btn" onclick="setLang('te',this)">తెలుగు</button>
+    <button class="lang-btn" onclick="setLang('kn',this)">ಕನ್ನಡ</button>
+    <button class="lang-btn" onclick="setLang('ml',this)">മലയാളം</button>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-suggestions" id="chat-suggestions">
+    <button class="sug-btn" id="sug1" onclick="sendSuggestion(this)">BC/MBC scholarship?</button>
+    <button class="sug-btn" id="sug2" onclick="sendSuggestion(this)">SC scholarship</button>
+    <button class="sug-btn" id="sug3" onclick="sendSuggestion(this)">How to apply?</button>
+  </div>
+  <div class="chat-input-row">
+    <textarea id="chat-input" placeholder="Ask about any scheme..." rows="1" onkeydown="handleChatKey(event)"></textarea>
+    <button id="chat-send" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<script>
+/* ─── SCHEME DATA ─── */
+const SCHEMES = [
+  {
+    id: 1,
+    name: "BC/MBC Students Scholarship (Tamil Nadu)",
+    gov: "Tamil Nadu Government",
+    amount: "₹10,000/yr",
+    tags: ["Scholarship","Tamil Nadu","OBC"],
+    category: ["Scholarship","OBC","Tamil Nadu"],
+    desc: "Financial assistance for BC/MBC students pursuing higher education in Tamil Nadu government colleges.",
+    eligibility: ["Caste: BC/MBC","State: Tamil Nadu","Must be a student","Income < ₹2,50,000"],
+    applyUrl: "https://scholarships.gov.in",
+    criteria: { caste: ["BC","MBC","OBC"], state: ["Tamil Nadu"], student: true, maxIncome: 250000 }
+  },
+  {
+    id: 2,
+    name: "Central Sector Scheme of Scholarships for College & University Students",
+    gov: "Ministry of Education, India",
+    amount: "₹20,000/yr",
+    tags: ["Scholarship","Merit","Central"],
+    category: ["Scholarship","Merit"],
+    desc: "For meritorious students from families with income below ₹8 lakh pursuing regular courses after Class XII.",
+    eligibility: ["Income < ₹8,00,000","Scored top 20% in Class 12","UG/PG student","Regular course"],
+    applyUrl: "https://scholarships.gov.in",
+    criteria: { student: true, maxIncome: 800000, minMarks: 80, eduLevel: ["Undergraduate (UG)","Postgraduate (PG)"] }
+  },
+  {
+    id: 3,
+    name: "Post Matric Scholarship for SC Students",
+    gov: "Ministry of Social Justice, India",
+    amount: "Full tuition + ₹5,400/mo",
+    tags: ["Scholarship","SC/ST"],
+    category: ["Scholarship","SC/ST"],
+    desc: "Central government scheme for Scheduled Caste students studying at post-matriculation level.",
+    eligibility: ["Caste: SC","Income < ₹2,50,000","Post-matric student"],
+    applyUrl: "https://scholarships.gov.in",
+    criteria: { caste: ["SC"], student: true, maxIncome: 250000, eduLevel: ["Undergraduate (UG)","Postgraduate (PG)","Class 11 - 12","Diploma / ITI"] }
+  },
+  {
+    id: 4,
+    name: "National Means-cum-Merit Scholarship (NMMS)",
+    gov: "Ministry of Education, India",
+    amount: "₹12,000/yr",
+    tags: ["Scholarship","Merit","Class 8-12"],
+    category: ["Scholarship","Merit"],
+    desc: "For economically weaker section students to prevent dropout at Class VIII and continue secondary education.",
+    eligibility: ["Income < ₹1,50,000","Class 8-10 student","Scored ≥55% in Class 7"],
+    applyUrl: "https://scholarships.gov.in",
+    criteria: { student: true, maxIncome: 150000, minMarks: 55, eduLevel: ["Class 8 - 10"] }
+  },
+  {
+    id: 5,
+    name: "Begum Hazrat Mahal National Scholarship",
+    gov: "Maulana Azad Education Foundation",
+    amount: "₹10,000/yr (Girls)",
+    tags: ["Scholarship","Minority","Girls"],
+    category: ["Scholarship","OBC"],
+    desc: "For meritorious girls from minority communities (Muslim, Christian, Sikh, Buddhist, Jain, Parsi) for Class 9-12.",
+    eligibility: ["Gender: Female","Minority community","Class 9-12 student","Marks ≥50%","Income < ₹2,00,000"],
+    applyUrl: "https://maef.nic.in",
+    criteria: { gender: ["Female"], student: true, maxIncome: 200000, minMarks: 50, religion: ["Muslim","Christian","Sikh","Buddhist","Jain"], eduLevel: ["Class 8 - 10","Class 11 - 12"] }
+  }
+];
+
+/* ─── STATE ─── */
+let currentStep = 0;
+const formData = {};
+
+/* ─── PAGE NAV ─── */
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  ['home','check','browse'].forEach(id => {
+    const el = document.getElementById('nav-' + id);
+    if (el) el.className = '';
+  });
+  const map = {home:'nav-home', eligibility:'nav-check', browse:'nav-browse'};
+  if (map[page]) document.getElementById(map[page]).className = 'active-tab';
+  window.scrollTo(0,0);
+  if (page === 'browse') renderBrowse();
+}
+
+/* ─── RADIO ─── */
+function selectRadio(groupId, el, val) {
+  document.querySelectorAll('#' + groupId + ' .radio-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  formData[groupId] = val;
+}
+
+/* ─── STEP NAV ─── */
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  gatherStep(from);
+  document.getElementById('form-step-' + from).style.display = 'none';
+  if (from + 1 <= 3) {
+    document.getElementById('form-step-' + (from+1)).style.display = 'block';
+    setProgress(from+1);
+  }
+}
+function prevStep(from) {
+  document.getElementById('form-step-' + from).style.display = 'none';
+  document.getElementById('form-step-' + (from-1)).style.display = 'block';
+  setProgress(from-1);
+}
+function setProgress(step) {
+  currentStep = step;
+  for (let i=0;i<4;i++) {
+    const el = document.getElementById('step-ind-'+i);
+    el.className = 'prog-step';
+    if (i < step) el.classList.add('done');
+    else if (i === step) el.classList.add('active');
+  }
+}
+function validateStep(step) {
+  if (step === 0) {
+    if (!document.getElementById('f-age').value) { alert('Please enter your age'); return false; }
+    if (!formData['rg-gender']) { alert('Please select gender'); return false; }
+    if (!document.getElementById('f-state').value) { alert('Please select your state'); return false; }
+  }
+  if (step === 1) {
+    if (!formData['rg-student']) { alert('Please select if you are a student'); return false; }
+    if (!document.getElementById('f-edu').value) { alert('Please select education level'); return false; }
+  }
+  if (step === 2) {
+    if (!document.getElementById('f-caste').value) { alert('Please select caste category'); return false; }
+  }
+  return true;
+}
+function gatherStep(step) {
+  if (step === 0) {
+    formData.age = parseInt(document.getElementById('f-age').value);
+    formData.gender = formData['rg-gender'];
+    formData.state = document.getElementById('f-state').value;
+  }
+  if (step === 1) {
+    formData.student = formData['rg-student'] === 'Yes';
+    formData.edu = document.getElementById('f-edu').value;
+    formData.inst = document.getElementById('f-inst').value;
+  }
+  if (step === 2) {
+    formData.caste = document.getElementById('f-caste').value;
+    formData.religion = document.getElementById('f-religion').value;
+    formData.pwd = formData['rg-pwd'] === 'Yes';
+  }
+}
+
+/* ─── SUBMIT ─── */
+function submitForm() {
+  if (!document.getElementById('f-income').value) { alert('Please enter annual family income'); return; }
+  formData.income = parseInt(document.getElementById('f-income').value);
+  formData.marks = parseFloat(document.getElementById('f-marks').value) || 0;
+  document.getElementById('form-step-3').style.display = 'none';
+  document.getElementById('loading-screen').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('loading-screen').style.display = 'none';
+    showResults();
+  }, 2200);
+}
+
+/* ─── ELIGIBILITY CHECK ─── */
+function checkScheme(s) {
+  const c = s.criteria;
+  let met = [], missed = [];
+  let score = 0;
+  if (c.caste) {
+    const userCaste = formData.caste;
+    const ok = c.caste.some(x => userCaste && userCaste.toLowerCase() === x.toLowerCase());
+    (ok ? met : missed).push({ text: 'Caste: ' + c.caste.join('/'), ok });
+    if (ok) score += 30;
+  }
+  if (c.gender) {
+    const ok = c.gender.includes(formData.gender);
+    (ok ? met : missed).push({ text: 'Gender: ' + c.gender.join('/'), ok });
+    if (ok) score += 15;
+  }
+  if (c.state) {
+    const ok = c.state.includes(formData.state);
+    (ok ? met : missed).push({ text: 'State: ' + c.state.join('/'), ok });
+    if (ok) score += 20;
+  }
+  if (c.student !== undefined) {
+    const ok = formData.student === c.student;
+    (ok ? met : missed).push({ text: 'Must be a student', ok });
+    if (ok) score += 10;
+  }
+  if (c.maxIncome !== undefined) {
+    const ok = formData.income <= c.maxIncome;
+    (ok ? met : missed).push({ text: 'Income ≤ ₹' + c.maxIncome.toLocaleString('en-IN'), ok });
+    if (ok) score += 20;
+  }
+  if (c.minMarks !== undefined) {
+    const ok = formData.marks >= c.minMarks;
+    (ok ? met : missed).push({ text: 'Marks ≥ ' + c.minMarks + '%', ok });
+    if (ok) score += 10;
+  }
+  if (c.eduLevel) {
+    const ok = c.eduLevel.includes(formData.edu);
+    (ok ? met : missed).push({ text: 'Education: ' + c.eduLevel.join('/'), ok });
+    if (ok) score += 15;
+  }
+  if (c.religion) {
+    const ok = c.religion.includes(formData.religion);
+    (ok ? met : missed).push({ text: 'Religion: Minority community', ok });
+    if (ok) score += 10;
+  }
+  const total = met.length + missed.length;
+  const pct = total ? Math.round((met.length / total) * 100) : 0;
+  const eligible = missed.length === 0;
+  return { eligible, pct, met, missed };
+}
+
+/* ─── SHOW RESULTS ─── */
+function showResults() {
+  const results = SCHEMES.map(s => ({ scheme: s, ...checkScheme(s) }));
+  const eligible = results.filter(r => r.eligible);
+  const others = results.filter(r => !r.eligible);
+  document.getElementById('results-sub').textContent = `Checked ${SCHEMES.length} schemes based on your profile.`;
+  document.getElementById('eligible-count').innerHTML = `
+    <div class="count-badge"><div class="dot green">✓</div>${eligible.length} Eligible</div>
+    <div class="count-badge"><div class="dot red">✕</div>${others.length} Not Eligible</div>`;
+  document.getElementById('result-summary').innerHTML = `
+    <div class="result-summary-item"><div class="label">Age</div><div class="val">${formData.age} Years</div></div>
+    <div class="result-summary-item"><div class="label">Gender</div><div class="val">${formData.gender || '—'}</div></div>
+    <div class="result-summary-item"><div class="label">State</div><div class="val">${formData.state || '—'}</div></div>
+    <div class="result-summary-item"><div class="label">Student</div><div class="val">${formData.student ? 'Yes' : 'No'}</div></div>
+    <div class="result-summary-item"><div class="label">Annual Income</div><div class="val">₹${parseInt(formData.income).toLocaleString('en-IN')}</div></div>
+    <div class="result-summary-item"><div class="label">Category</div><div class="val">${formData.caste || '—'}</div></div>`;
+  document.getElementById('no-match-msg').style.display = eligible.length === 0 ? 'block' : 'none';
+  document.getElementById('eligible-cards').innerHTML = eligible.map(r => buildResultCard(r, true)).join('');
+  document.getElementById('other-header').textContent = others.length ? `Other Schemes Checked (${others.length})` : '';
+  document.getElementById('other-cards').innerHTML = others.map(r => buildResultCard(r, false)).join('');
+  document.getElementById('results-screen').style.display = 'block';
+  setTimeout(() => {
+    document.querySelectorAll('.progress-bar-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 100);
+}
+
+function buildResultCard(r, eligible) {
+  const allCriteria = [...r.met.map(x=>({...x,ok:true})), ...r.missed.map(x=>({...x,ok:false}))];
+  const applyBtn = eligible
+    ? `<a class="btn-apply" href="${r.scheme.applyUrl}" target="_blank" rel="noopener">🚀 Apply Now →</a>`
+    : '';
+  return `
+    <div class="result-card">
+      <div class="result-card-header" onclick="toggleCard(this)">
+        <div class="result-card-left">
+          <div class="result-icon ${eligible?'eligible':'not-eligible'}">${eligible?'✓':'✕'}</div>
+          <div>
+            <div class="result-card-title">${r.scheme.name}</div>
+            <div class="result-card-tags">${r.scheme.tags.map(t=>`<span class="tag" style="font-size:11px;padding:2px 8px">${t}</span>`).join('')}</div>
+          </div>
+        </div>
+        <div class="chevron">⌄</div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-label"><span>Match score</span><span>${r.pct}%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" data-pct="${r.pct}" style="width:0%"></div></div>
+      </div>
+      <div class="result-details">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">${r.scheme.desc}</p>
+        <p style="font-size:13px;font-weight:600;margin-bottom:10px">Criteria check:</p>
+        <ul class="criteria-list">
+          ${allCriteria.map(c=>`<li class="${c.ok?'met':''}"><span class="ic">${c.ok?'✅':'❌'}</span>${c.text}</li>`).join('')}
+        </ul>
+        ${applyBtn}
+      </div>
+    </div>`;
+}
+
+function toggleCard(header) {
+  const details = header.parentElement.querySelector('.result-details');
+  const chevron = header.querySelector('.chevron');
+  details.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+/* ─── RESET ─── */
+function resetForm() {
+  Object.keys(formData).forEach(k => delete formData[k]);
+  currentStep = 0;
+  for (let i=0; i<4; i++) {
+    document.getElementById('form-step-'+i).style.display = i===0?'block':'none';
+    const si = document.getElementById('step-ind-'+i);
+    si.className = 'prog-step';
+    if (i===0) si.classList.add('active');
+  }
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('loading-screen').style.display = 'none';
+  document.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('input[type=number], select').forEach(el => el.value = '');
+}
+
+/* ─── BROWSE ─── */
+function renderBrowse(filter) {
+  const schemes = filter && filter !== 'All' ? SCHEMES.filter(s => s.category.includes(filter)) : SCHEMES;
+  document.getElementById('browse-grid').innerHTML = schemes.map(s => `
+    <div class="browse-scheme-card">
+      <div class="scheme-top">
+        <div><div class="scheme-title">${s.name}</div><div class="scheme-gov">${s.gov}</div></div>
+        <div class="scheme-amount">${s.amount}</div>
+      </div>
+      <div class="scheme-desc">${s.desc}</div>
+      <div class="scheme-eligibility">${s.eligibility.map(e=>`<span class="elig-tag">${e}</span>`).join('')}</div>
+      <a class="btn-apply-browse" href="${s.applyUrl}" target="_blank" rel="noopener">Apply Now →</a>
+    </div>`).join('');
+}
+function filterSchemes(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBrowse(cat);
+}
+renderBrowse();
+
+/* ══════════════════ CHATBOT — MULTI-LANGUAGE ══════════════════ */
+
+/* ── Language Detection ── */
+function detectLang(text) {
+  // Telugu: Unicode 0C00–0C7F
+  if (/[\u0C00-\u0C7F]/.test(text)) return 'te';
+  // Kannada: 0C80–0CFF
+  if (/[\u0C80-\u0CFF]/.test(text)) return 'kn';
+  // Malayalam: 0D00–0D7F
+  if (/[\u0D00-\u0D7F]/.test(text)) return 'ml';
+  // Hindi/Devanagari: 0900–097F
+  if (/[\u0900-\u097F]/.test(text)) return 'hi';
+  // Tamil: 0B80–0BFF
+  if (/[\u0B80-\u0BFF]/.test(text)) return 'ta';
+  // Roman script keyword overrides
+  const lo = text.toLowerCase();
+  if (/\b(nenu|meeru|emi|ela|scholarship|chaduvu)\b/.test(lo)) return 'te';
+  if (/\b(nanu|nimma|enu|scholarship)\b/.test(lo)) return 'kn';
+  if (/\b(njaan|ningal|scholarship)\b/.test(lo)) return 'ml';
+  if (/\b(mujhe|kya|kaise|scholarship|yojana|paisa)\b/.test(lo)) return 'hi';
+  if (/\b(vanakkam|nandri|enna|evvalavu|padikiren|epadi|panni|sollu|theriyum|theriyala|panam|konjam|nalla)\b/.test(lo)) return 'ta';
+  return 'en';
+}
+
+/* ── Greetings per language ── */
+const GREET = {
+  ta: `வணக்கம்! 👋 நான் <b>SevAI Assistant</b>.<br><br>Scholarship பத்தி எந்த கேள்வியும் கேக்கலாம் — eligibility, amount, apply, documents எல்லாம் சொல்றேன்! 😊<br><br><i>கேட்கலாம்: "BC/MBC scholarship", "How to apply", "Documents needed"</i>`,
+  hi: `नमस्ते! 👋 मैं <b>SevAI Assistant</b> हूँ।<br><br>सरकारी छात्रवृत्ति के बारे में कोई भी सवाल पूछें — eligibility, amount, apply करना, documents सब बताऊंगा! 😊<br><br><i>पूछें: "SC scholarship", "Apply kaise kare", "Documents kya chahiye"</i>`,
+  te: `నమస్కారం! 👋 నేను <b>SevAI Assistant</b>.<br><br>ప్రభుత్వ scholarship గురించి ఏ ప్రశ్నైనా అడగండి — eligibility, amount, apply, documents అన్నీ చెప్తాను! 😊<br><br><i>అడగవచ్చు: "SC scholarship", "Apply ela cheyyali", "Documents emi kavali"</i>`,
+  kn: `ನಮಸ್ಕಾರ! 👋 ನಾನು <b>SevAI Assistant</b>.<br><br>ಸರ್ಕಾರಿ ವೇತನದ ಬಗ್ಗೆ ಯಾವ ಪ್ರಶ್ನೆಯಾದರೂ ಕೇಳಿ — eligibility, amount, apply, documents ಎಲ್ಲವನ್ನೂ ಹೇಳುತ್ತೇನೆ! 😊<br><br><i>ಕೇಳಬಹುದು: "SC scholarship", "Apply hege maaduvudu", "Documents enu beku"</i>`,
+  ml: `നമസ്കാരം! 👋 ഞാൻ <b>SevAI Assistant</b> ആണ്.<br><br>സർക്കാർ scholarship-നെ കുറിച്ച് ഏതു ചോദ്യവും ചോദിക്കൂ — eligibility, amount, apply, documents എല്ലാം പറയാം! 😊<br><br><i>ചോദിക്കാം: "SC scholarship", "Apply cheyyunnathu epadi", "Documents enthu veno"</i>`,
+  en: `Hello! 👋 I'm <b>SevAI Assistant</b>.<br><br>Ask me anything about government scholarships — eligibility, amounts, how to apply, documents — I'll help you! 😊<br><br><i>Try: "BC/MBC scholarship", "How to apply", "Documents needed", "Income limit"</i>`
+};
+
+/* ── Knowledge base — 6 languages per topic ── */
+const TOPICS = {
+  bcmbc: {
+    keys: ['bc','mbc','tamil nadu','tn ','tamilnadu','bc scholarship','mbc scholarship','bc/mbc'],
+    answers: {
+      ta: `🎓 <b>BC/MBC Students Scholarship (Tamil Nadu)</b><br><br>✅ யாருக்கு: BC / MBC category<br>📍 State: Tamil Nadu மட்டும்<br>💰 Amount: ₹10,000/year<br>🏦 Income limit: ₹2,50,000-க்கு கீழ்<br>🏫 Government college-ல் படிக்கணும்<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      hi: `🎓 <b>BC/MBC Students Scholarship (Tamil Nadu)</b><br><br>✅ किसके लिए: BC / MBC वर्ग<br>📍 केवल Tamil Nadu के छात्रों के लिए<br>💰 राशि: ₹10,000/साल<br>🏦 आय सीमा: ₹2,50,000 से कम<br>🏫 Government college में पढ़ना जरूरी<br><br>📎 Apply करें: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      te: `🎓 <b>BC/MBC Students Scholarship (Tamil Nadu)</b><br><br>✅ ఎవరికి: BC / MBC కేటగిరీ<br>📍 కేవలం Tamil Nadu విద్యార్థులకు<br>💰 మొత్తం: ₹10,000/సంవత్సరం<br>🏦 ఆదాయ పరిమితి: ₹2,50,000 కంటే తక్కువ<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      kn: `🎓 <b>BC/MBC Students Scholarship (Tamil Nadu)</b><br><br>✅ ಯಾರಿಗೆ: BC / MBC ವರ್ಗ<br>📍 ಕೇವಲ Tamil Nadu ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ<br>💰 ಮೊತ್ತ: ₹10,000/ವರ್ಷ<br>🏦 ಆದಾಯ ಮಿತಿ: ₹2,50,000 ಕ್ಕಿಂತ ಕಡಿಮೆ<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      ml: `🎓 <b>BC/MBC Students Scholarship (Tamil Nadu)</b><br><br>✅ ആർക്ക്: BC / MBC വിഭാഗം<br>📍 Tamil Nadu വിദ്യാർഥികൾക്ക് മാത്രം<br>💰 തുക: ₹10,000/വർഷം<br>🏦 വരുമാന പരിധി: ₹2,50,000-ൽ കുറവ്<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      en: `🎓 <b>BC/MBC Students Scholarship (Tamil Nadu)</b><br><br>✅ For: BC / MBC category students<br>📍 State: Tamil Nadu only<br>💰 Amount: ₹10,000/year<br>🏦 Income limit: Below ₹2,50,000<br>🏫 Must study in Government college<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`
+    }
+  },
+  central: {
+    keys: ['central sector','css','top 20','ug scholarship','pg scholarship','central scholarship','merit scholarship'],
+    answers: {
+      ta: `🎓 <b>Central Sector Scholarship</b><br><br>✅ யாருக்கு: Class 12-ல் top 20% score<br>💰 Amount: ₹10,000–₹20,000/year<br>🏦 Income limit: ₹8,00,000-க்கு கீழ்<br>📚 Level: UG / PG regular courses<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      hi: `🎓 <b>Central Sector Scholarship</b><br><br>✅ किसके लिए: Class 12 में top 20% scorer<br>💰 राशि: ₹10,000–₹20,000/साल<br>🏦 आय सीमा: ₹8,00,000 से कम<br>📚 स्तर: UG / PG regular courses<br><br>📎 Apply करें: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      te: `🎓 <b>Central Sector Scholarship</b><br><br>✅ ఎవరికి: Class 12లో top 20% score<br>💰 మొత్తం: ₹10,000–₹20,000/సంవత్సరం<br>🏦 ఆదాయ పరిమితి: ₹8,00,000 కంటే తక్కువ<br>📚 UG / PG regular courses<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      kn: `🎓 <b>Central Sector Scholarship</b><br><br>✅ ಯಾರಿಗೆ: Class 12ರಲ್ಲಿ top 20% score<br>💰 ಮೊತ್ತ: ₹10,000–₹20,000/ವರ್ಷ<br>🏦 ಆದಾಯ ಮಿತಿ: ₹8,00,000 ಕ್ಕಿಂತ ಕಡಿಮೆ<br>📚 UG / PG regular courses<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      ml: `🎓 <b>Central Sector Scholarship</b><br><br>✅ ആർക്ക്: Class 12ൽ top 20% score<br>💰 തുക: ₹10,000–₹20,000/വർഷം<br>🏦 വരുമാന പരിധി: ₹8,00,000-ൽ കുറവ്<br>📚 UG / PG regular courses<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      en: `🎓 <b>Central Sector Scholarship</b><br><br>✅ For: Top 20% scorers in Class 12<br>💰 Amount: ₹10,000–₹20,000/year<br>🏦 Income limit: Below ₹8,00,000<br>📚 Level: UG / PG regular courses<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`
+    }
+  },
+  sc: {
+    keys: ['sc scholarship','post matric','scheduled caste','sc students','sc caste','sc/st','sc student'],
+    answers: {
+      ta: `🎓 <b>Post Matric Scholarship — SC Students</b><br><br>✅ யாருக்கு: Scheduled Caste (SC)<br>💰 Amount: Full tuition + ₹5,400/month<br>🏦 Income limit: ₹2,50,000-க்கு கீழ்<br>📚 Level: Class 11+, UG, PG, Diploma<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      hi: `🎓 <b>Post Matric Scholarship — SC Students</b><br><br>✅ किसके लिए: अनुसूचित जाति (SC)<br>💰 राशि: पूरी tuition fee + ₹5,400/महीना<br>🏦 आय सीमा: ₹2,50,000 से कम<br>📚 Class 11 से ऊपर, UG, PG, Diploma<br><br>📎 Apply करें: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      te: `🎓 <b>Post Matric Scholarship — SC Students</b><br><br>✅ ఎవరికి: Scheduled Caste (SC)<br>💰 మొత్తం: Full tuition + ₹5,400/నెల<br>🏦 ఆదాయ పరిమితి: ₹2,50,000 కంటే తక్కువ<br>📚 Class 11+, UG, PG, Diploma<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      kn: `🎓 <b>Post Matric Scholarship — SC Students</b><br><br>✅ ಯಾರಿಗೆ: Scheduled Caste (SC)<br>💰 ಮೊತ್ತ: Full tuition + ₹5,400/ತಿಂಗಳು<br>🏦 ಆದಾಯ ಮಿತಿ: ₹2,50,000 ಕ್ಕಿಂತ ಕಡಿಮೆ<br>📚 Class 11+, UG, PG, Diploma<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      ml: `🎓 <b>Post Matric Scholarship — SC Students</b><br><br>✅ ആർക്ക്: Scheduled Caste (SC)<br>💰 തുക: Full tuition + ₹5,400/മാസം<br>🏦 വരുമാന പരിധി: ₹2,50,000-ൽ കുറവ്<br>📚 Class 11+, UG, PG, Diploma<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      en: `🎓 <b>Post Matric Scholarship — SC Students</b><br><br>✅ For: Scheduled Caste (SC) students<br>💰 Amount: Full tuition + ₹5,400/month<br>🏦 Income limit: Below ₹2,50,000<br>📚 Level: Class 11+, UG, PG, Diploma<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`
+    }
+  },
+  nmms: {
+    keys: ['nmms','national means','class 8','class 9','class 10','8th','9th','10th','means cum merit','8వ','9వ','10వ'],
+    answers: {
+      ta: `🎓 <b>NMMS Scholarship</b><br><br>✅ யாருக்கு: Class 8–10 students<br>💰 Amount: ₹12,000/year<br>🏦 Income: ₹1,50,000-க்கு கீழ்<br>📝 Class 7-ல் ≥55% வேணும்<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      hi: `🎓 <b>NMMS Scholarship</b><br><br>✅ किसके लिए: Class 8–10 के छात्र<br>💰 राशि: ₹12,000/साल<br>🏦 आय: ₹1,50,000 से कम<br>📝 Class 7 में ≥55% अंक होने चाहिए<br><br>📎 Apply करें: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      te: `🎓 <b>NMMS Scholarship</b><br><br>✅ ఎవరికి: Class 8–10 విద్యార్థులు<br>💰 మొత్తం: ₹12,000/సంవత్సరం<br>🏦 ఆదాయం: ₹1,50,000 కంటే తక్కువ<br>📝 Class 7లో ≥55% మార్కులు<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      kn: `🎓 <b>NMMS Scholarship</b><br><br>✅ ಯಾರಿಗೆ: Class 8–10 ವಿದ್ಯಾರ್ಥಿಗಳು<br>💰 ಮೊತ್ತ: ₹12,000/ವರ್ಷ<br>🏦 ಆದಾಯ: ₹1,50,000 ಕ್ಕಿಂತ ಕಡಿಮೆ<br>📝 Class 7ರಲ್ಲಿ ≥55% ಅಂಕಗಳು<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      ml: `🎓 <b>NMMS Scholarship</b><br><br>✅ ആർക്ക്: Class 8–10 വിദ്യാർഥികൾ<br>💰 തുക: ₹12,000/വർഷം<br>🏦 വരുമാനം: ₹1,50,000-ൽ കുറവ്<br>📝 Class 7ൽ ≥55% മാർക്ക് വേണം<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      en: `🎓 <b>NMMS Scholarship</b><br><br>✅ For: Class 8–10 students<br>💰 Amount: ₹12,000/year<br>🏦 Income: Below ₹1,50,000<br>📝 Must have ≥55% in Class 7<br><br>📎 Apply: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`
+    }
+  },
+  begum: {
+    keys: ['begum','hazrat mahal','minority','muslim','christian','sikh','buddhist','jain','girls scholarship','girl scholarship','women scholarship'],
+    answers: {
+      ta: `🎓 <b>Begum Hazrat Mahal Scholarship</b><br><br>✅ யாருக்கு: Minority community girls மட்டும்<br>🕌 Muslim, Christian, Sikh, Buddhist, Jain<br>💰 Amount: ₹10,000/year<br>🏦 Income: ₹2,00,000-க்கு கீழ்<br>📝 Marks ≥50%, Class 9–12<br><br>📎 Apply: <a href="https://maef.nic.in" target="_blank" style="color:var(--orange);font-weight:700">maef.nic.in</a>`,
+      hi: `🎓 <b>Begum Hazrat Mahal Scholarship</b><br><br>✅ किसके लिए: केवल अल्पसंख्यक समुदाय की लड़कियां<br>🕌 Muslim, Christian, Sikh, Buddhist, Jain<br>💰 राशि: ₹10,000/साल<br>🏦 आय: ₹2,00,000 से कम<br>📝 Marks ≥50%, Class 9–12<br><br>📎 Apply करें: <a href="https://maef.nic.in" target="_blank" style="color:var(--orange);font-weight:700">maef.nic.in</a>`,
+      te: `🎓 <b>Begum Hazrat Mahal Scholarship</b><br><br>✅ ఎవరికి: Minority community అమ్మాయిలకు మాత్రమే<br>🕌 Muslim, Christian, Sikh, Buddhist, Jain<br>💰 మొత్తం: ₹10,000/సంవత్సరం<br>🏦 ఆదాయం: ₹2,00,000 కంటే తక్కువ<br>📝 Marks ≥50%, Class 9–12<br><br>📎 Apply: <a href="https://maef.nic.in" target="_blank" style="color:var(--orange);font-weight:700">maef.nic.in</a>`,
+      kn: `🎓 <b>Begum Hazrat Mahal Scholarship</b><br><br>✅ ಯಾರಿಗೆ: Minority community ಹುಡುಗಿಯರಿಗೆ ಮಾತ್ರ<br>🕌 Muslim, Christian, Sikh, Buddhist, Jain<br>💰 ಮೊತ್ತ: ₹10,000/ವರ್ಷ<br>🏦 ಆದಾಯ: ₹2,00,000 ಕ್ಕಿಂತ ಕಡಿಮೆ<br>📝 Marks ≥50%, Class 9–12<br><br>📎 Apply: <a href="https://maef.nic.in" target="_blank" style="color:var(--orange);font-weight:700">maef.nic.in</a>`,
+      ml: `🎓 <b>Begum Hazrat Mahal Scholarship</b><br><br>✅ ആർക്ക്: Minority community പെൺകുട്ടികൾക്ക് മാത്രം<br>🕌 Muslim, Christian, Sikh, Buddhist, Jain<br>💰 തുക: ₹10,000/വർഷം<br>🏦 വരുമാനം: ₹2,00,000-ൽ കുറവ്<br>📝 Marks ≥50%, Class 9–12<br><br>📎 Apply: <a href="https://maef.nic.in" target="_blank" style="color:var(--orange);font-weight:700">maef.nic.in</a>`,
+      en: `🎓 <b>Begum Hazrat Mahal Scholarship</b><br><br>✅ For: Minority community girls only<br>🕌 Muslim, Christian, Sikh, Buddhist, Jain<br>💰 Amount: ₹10,000/year<br>🏦 Income: Below ₹2,00,000<br>📝 Marks ≥50%, Class 9–12<br><br>📎 Apply: <a href="https://maef.nic.in" target="_blank" style="color:var(--orange);font-weight:700">maef.nic.in</a>`
+    }
+  },
+  apply: {
+    keys: ['how to apply','apply panna','apply pannuvathu','apply kaise','ela apply','hege apply','apply cheyyali','apply cheyyunnathu','application','register','portal','website','எப்படி apply','apply how','apply cheyyadam'],
+    answers: {
+      ta: `📋 <b>எப்படி Apply பண்றது?</b><br><br>1️⃣ <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a> போங்க<br>2️⃣ "New Registration" click பண்ணுங்க<br>3️⃣ Aadhaar வச்சு register பண்ணுங்க<br>4️⃣ Eligible scheme select பண்ணுங்க<br>5️⃣ Documents upload பண்ணுங்க<br>6️⃣ Submit → College verify பண்ணும்<br><br>💡 Deadline: பொதுவா Oct–Nov`,
+      hi: `📋 <b>Apply कैसे करें?</b><br><br>1️⃣ <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a> पर जाएं<br>2️⃣ "New Registration" पर click करें<br>3️⃣ Aadhaar से register करें<br>4️⃣ अपनी eligible scheme चुनें<br>5️⃣ Documents upload करें<br>6️⃣ Submit करें → College verify करेगा<br><br>💡 Deadline: आमतौर पर Oct–Nov`,
+      te: `📋 <b>Apply ఎలా చేయాలి?</b><br><br>1️⃣ <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a> కి వెళ్ళండి<br>2️⃣ "New Registration" click చేయండి<br>3️⃣ Aadhaar తో register చేయండి<br>4️⃣ మీ eligible scheme ఎంచుకోండి<br>5️⃣ Documents upload చేయండి<br>6️⃣ Submit చేయండి → College verify చేస్తుంది<br><br>💡 Deadline: సాధారణంగా Oct–Nov`,
+      kn: `📋 <b>Apply ಹೇಗೆ ಮಾಡುವುದು?</b><br><br>1️⃣ <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a> ಗೆ ಹೋಗಿ<br>2️⃣ "New Registration" click ಮಾಡಿ<br>3️⃣ Aadhaar ನಿಂದ register ಮಾಡಿ<br>4️⃣ ನಿಮ್ಮ eligible scheme ಆಯ್ಕೆ ಮಾಡಿ<br>5️⃣ Documents upload ಮಾಡಿ<br>6️⃣ Submit ಮಾಡಿ → College verify ಮಾಡುತ್ತದೆ<br><br>💡 Deadline: ಸಾಮಾನ್ಯವಾಗಿ Oct–Nov`,
+      ml: `📋 <b>Apply എങ്ങനെ ചെയ്യണം?</b><br><br>1️⃣ <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a> ൽ പോകൂ<br>2️⃣ "New Registration" click ചെയ്യൂ<br>3️⃣ Aadhaar ഉപയോഗിച്ച് register ചെയ്യൂ<br>4️⃣ Eligible scheme തിരഞ്ഞെടുക്കൂ<br>5️⃣ Documents upload ചെയ്യൂ<br>6️⃣ Submit ചെയ്യൂ → College verify ചെയ്യും<br><br>💡 Deadline: സാധാരണ Oct–Nov`,
+      en: `📋 <b>How to Apply?</b><br><br>1️⃣ Go to <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a><br>2️⃣ Click "New Registration"<br>3️⃣ Register using your Aadhaar<br>4️⃣ Select your eligible scheme<br>5️⃣ Upload required documents<br>6️⃣ Submit → Your college will verify<br><br>💡 Deadline: Usually October–November`
+    }
+  },
+  docs: {
+    keys: ['documents','document','certificate','என்ன வேணும்','kya chahiye','emi kavali','enu beku','enthu veno','what documents','proof','papers','காகிதம்'],
+    answers: {
+      ta: `📄 <b>தேவையான Documents</b><br><br>✅ Aadhaar Card<br>✅ Income Certificate (Tahsildar)<br>✅ Caste / Community Certificate<br>✅ Previous Mark Sheet<br>✅ Bank Passbook (student name)<br>✅ Bonafide Certificate (college)<br>✅ Passport size photo<br><br>⚠️ Income certificate 1 year-க்கும் மேல் பழசா இருக்கக்கூடாது!`,
+      hi: `📄 <b>जरूरी Documents</b><br><br>✅ Aadhaar Card<br>✅ Income Certificate (Tahsildar से)<br>✅ Caste / Community Certificate<br>✅ पिछले साल की Mark Sheet<br>✅ Bank Passbook (छात्र के नाम पर)<br>✅ Bonafide Certificate (college से)<br>✅ Passport size photo<br><br>⚠️ Income certificate 1 साल से पुराना नहीं होना चाहिए!`,
+      te: `📄 <b>అవసరమైన Documents</b><br><br>✅ Aadhaar Card<br>✅ Income Certificate (Tahsildar నుండి)<br>✅ Caste / Community Certificate<br>✅ గత సంవత్సరం Mark Sheet<br>✅ Bank Passbook (విద్యార్థి పేరిట)<br>✅ Bonafide Certificate (college నుండి)<br>✅ Passport size photo<br><br>⚠️ Income certificate 1 సంవత్సరం కంటే పాతది ఉండకూడదు!`,
+      kn: `📄 <b>ಅಗತ್ಯ Documents</b><br><br>✅ Aadhaar Card<br>✅ Income Certificate (Tahsildar ನಿಂದ)<br>✅ Caste / Community Certificate<br>✅ ಹಿಂದಿನ Mark Sheet<br>✅ Bank Passbook (ವಿದ್ಯಾರ್ಥಿ ಹೆಸರಿನಲ್ಲಿ)<br>✅ Bonafide Certificate (college ನಿಂದ)<br>✅ Passport size photo<br><br>⚠️ Income certificate 1 ವರ್ಷಕ್ಕಿಂತ ಹಳೆಯದಾಗಿರಬಾರದು!`,
+      ml: `📄 <b>ആവശ്യമായ Documents</b><br><br>✅ Aadhaar Card<br>✅ Income Certificate (Tahsildar-ൽ നിന്ന്)<br>✅ Caste / Community Certificate<br>✅ കഴിഞ്ഞ വർഷത്തെ Mark Sheet<br>✅ Bank Passbook (വിദ്യാർഥിയുടെ പേരിൽ)<br>✅ Bonafide Certificate (college-ൽ നിന്ന്)<br>✅ Passport size photo<br><br>⚠️ Income certificate 1 വർഷത്തിൽ കൂടുതൽ പഴകിയതാകരുത്!`,
+      en: `📄 <b>Required Documents</b><br><br>✅ Aadhaar Card<br>✅ Income Certificate (from Tahsildar)<br>✅ Caste / Community Certificate<br>✅ Previous year Mark Sheet<br>✅ Bank Passbook (in student's name)<br>✅ Bonafide Certificate (from college)<br>✅ Passport size photo<br><br>⚠️ Income certificate should not be older than 1 year!`
+    }
+  },
+  income: {
+    keys: ['income','வருமானம்','आय','ఆదాయం','ಆದಾಯ','വരുമാനം','family income','income limit','how much income','எவ்வளவு','kitna income','entha income','eshtu income'],
+    answers: {
+      ta: `💰 <b>Income Limits — Scheme-wise</b><br><br>📌 BC/MBC (TN): ₹2,50,000/yr<br>📌 Central Sector: ₹8,00,000/yr<br>📌 SC Post Matric: ₹2,50,000/yr<br>📌 NMMS: ₹1,50,000/yr<br>📌 Begum Hazrat Mahal: ₹2,00,000/yr<br><br>💡 Income certificate Tahsildar office-ல் எடுக்கலாம்.`,
+      hi: `💰 <b>Income Limits — Scheme-wise</b><br><br>📌 BC/MBC (TN): ₹2,50,000/साल<br>📌 Central Sector: ₹8,00,000/साल<br>📌 SC Post Matric: ₹2,50,000/साल<br>📌 NMMS: ₹1,50,000/साल<br>📌 Begum Hazrat Mahal: ₹2,00,000/साल<br><br>💡 Income certificate Tahsildar office से लें।`,
+      te: `💰 <b>Income Limits — Scheme-wise</b><br><br>📌 BC/MBC (TN): ₹2,50,000/సంవత్సరం<br>📌 Central Sector: ₹8,00,000/సంవత్సరం<br>📌 SC Post Matric: ₹2,50,000/సంవత్సరం<br>📌 NMMS: ₹1,50,000/సంవత్సరం<br>📌 Begum Hazrat Mahal: ₹2,00,000/సంవత్సరం<br><br>💡 Income certificate Tahsildar office నుండి తీసుకోండి.`,
+      kn: `💰 <b>Income Limits — Scheme-wise</b><br><br>📌 BC/MBC (TN): ₹2,50,000/ವರ್ಷ<br>📌 Central Sector: ₹8,00,000/ವರ್ಷ<br>📌 SC Post Matric: ₹2,50,000/ವರ್ಷ<br>📌 NMMS: ₹1,50,000/ವರ್ಷ<br>📌 Begum Hazrat Mahal: ₹2,00,000/ವರ್ಷ<br><br>💡 Income certificate Tahsildar office-ನಿಂದ ಪಡೆಯಿರಿ.`,
+      ml: `💰 <b>Income Limits — Scheme-wise</b><br><br>📌 BC/MBC (TN): ₹2,50,000/വർഷം<br>📌 Central Sector: ₹8,00,000/വർഷം<br>📌 SC Post Matric: ₹2,50,000/വർഷം<br>📌 NMMS: ₹1,50,000/വർഷം<br>📌 Begum Hazrat Mahal: ₹2,00,000/വർഷം<br><br>💡 Income certificate Tahsildar office-ൽ നിന്ന് എടുക്കാം.`,
+      en: `💰 <b>Income Limits — Scheme-wise</b><br><br>📌 BC/MBC (TN): ₹2,50,000/yr<br>📌 Central Sector: ₹8,00,000/yr<br>📌 SC Post Matric: ₹2,50,000/yr<br>📌 NMMS: ₹1,50,000/yr<br>📌 Begum Hazrat Mahal: ₹2,00,000/yr<br><br>💡 Income certificate from your Tahsildar office.`
+    }
+  },
+  allschemes: {
+    keys: ['all schemes','list','எல்லா scheme','सभी योजना','anni schemes','ella scheme','ella scholarship','schemes list','total schemes','how many'],
+    answers: {
+      ta: `📚 <b>SevAI-ல் உள்ள 5 Schemes:</b><br><br>1️⃣ BC/MBC Scholarship (TN) — ₹10,000/yr<br>2️⃣ Central Sector Scholarship — ₹20,000/yr<br>3️⃣ SC Post Matric Scholarship — Full tuition<br>4️⃣ NMMS — ₹12,000/yr<br>5️⃣ Begum Hazrat Mahal (Girls) — ₹10,000/yr<br><br>🔍 <b>Check Eligibility</b> page-ல் உங்கள் details enter பண்ணுங்க!`,
+      hi: `📚 <b>SevAI में उपलब्ध 5 Schemes:</b><br><br>1️⃣ BC/MBC Scholarship (TN) — ₹10,000/yr<br>2️⃣ Central Sector Scholarship — ₹20,000/yr<br>3️⃣ SC Post Matric Scholarship — Full tuition<br>4️⃣ NMMS — ₹12,000/yr<br>5️⃣ Begum Hazrat Mahal (Girls) — ₹10,000/yr<br><br>🔍 <b>Check Eligibility</b> page पर अपनी details डालें!`,
+      te: `📚 <b>SevAI లో 5 Schemes:</b><br><br>1️⃣ BC/MBC Scholarship (TN) — ₹10,000/yr<br>2️⃣ Central Sector Scholarship — ₹20,000/yr<br>3️⃣ SC Post Matric Scholarship — Full tuition<br>4️⃣ NMMS — ₹12,000/yr<br>5️⃣ Begum Hazrat Mahal (Girls) — ₹10,000/yr<br><br>🔍 <b>Check Eligibility</b> page లో మీ details ఇవ్వండి!`,
+      kn: `📚 <b>SevAI ನಲ್ಲಿ 5 Schemes:</b><br><br>1️⃣ BC/MBC Scholarship (TN) — ₹10,000/yr<br>2️⃣ Central Sector Scholarship — ₹20,000/yr<br>3️⃣ SC Post Matric Scholarship — Full tuition<br>4️⃣ NMMS — ₹12,000/yr<br>5️⃣ Begum Hazrat Mahal (Girls) — ₹10,000/yr<br><br>🔍 <b>Check Eligibility</b> page-ನಲ್ಲಿ ನಿಮ್ಮ details ನಮೂದಿಸಿ!`,
+      ml: `📚 <b>SevAI ൽ 5 Schemes:</b><br><br>1️⃣ BC/MBC Scholarship (TN) — ₹10,000/yr<br>2️⃣ Central Sector Scholarship — ₹20,000/yr<br>3️⃣ SC Post Matric Scholarship — Full tuition<br>4️⃣ NMMS — ₹12,000/yr<br>5️⃣ Begum Hazrat Mahal (Girls) — ₹10,000/yr<br><br>🔍 <b>Check Eligibility</b> page-ൽ details നൽകൂ!`,
+      en: `📚 <b>5 Schemes available in SevAI:</b><br><br>1️⃣ BC/MBC Scholarship (TN) — ₹10,000/yr<br>2️⃣ Central Sector Scholarship — ₹20,000/yr<br>3️⃣ SC Post Matric Scholarship — Full tuition<br>4️⃣ NMMS — ₹12,000/yr<br>5️⃣ Begum Hazrat Mahal (Girls) — ₹10,000/yr<br><br>🔍 Enter your details in <b>Check Eligibility</b> page!`
+    }
+  },
+  deadline: {
+    keys: ['deadline','last date','கடைசி நாள்','antim tarikh','last tarikh','when to apply','date','எப்போது apply'],
+    answers: {
+      ta: `📅 <b>Application Deadlines</b><br><br>🗓️ Most scholarships: <b>October–November</b><br>🗓️ NMMS: <b>September</b> (state-wise)<br>🗓️ Central Sector: <b>October 31</b><br><br>⚠️ Deadline miss ஆனா next year வரை wait பண்ணணும்!<br>💡 Exact dates: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      hi: `📅 <b>Application Deadlines</b><br><br>🗓️ अधिकतर scholarships: <b>October–November</b><br>🗓️ NMMS: <b>September</b><br>🗓️ Central Sector: <b>31 October</b><br><br>⚠️ Deadline miss हुई तो अगले साल तक wait करना होगा!<br>💡 <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      te: `📅 <b>Application Deadlines</b><br><br>🗓️ చాలా scholarships: <b>October–November</b><br>🗓️ NMMS: <b>September</b><br>🗓️ Central Sector: <b>October 31</b><br><br>⚠️ Deadline miss అయితే మళ్ళీ next year వరకు wait చేయాలి!<br>💡 <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      kn: `📅 <b>Application Deadlines</b><br><br>🗓️ ಹೆಚ್ಚಿನ scholarships: <b>October–November</b><br>🗓️ NMMS: <b>September</b><br>🗓️ Central Sector: <b>October 31</b><br><br>⚠️ Deadline miss ಆದರೆ next year ವರೆಗೆ wait ಮಾಡಬೇಕು!<br>💡 <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      ml: `📅 <b>Application Deadlines</b><br><br>🗓️ മിക്ക scholarships: <b>October–November</b><br>🗓️ NMMS: <b>September</b><br>🗓️ Central Sector: <b>October 31</b><br><br>⚠️ Deadline miss ആയാൽ next year വരെ wait ചെയ്യണം!<br>💡 <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`,
+      en: `📅 <b>Application Deadlines</b><br><br>🗓️ Most scholarships: <b>October–November</b><br>🗓️ NMMS: <b>September</b> (state-wise)<br>🗓️ Central Sector: <b>October 31</b><br><br>⚠️ If you miss the deadline, you'll have to wait until next year!<br>💡 Check exact dates: <a href="https://scholarships.gov.in" target="_blank" style="color:var(--orange);font-weight:700">scholarships.gov.in</a>`
+    }
+  }
+};
+
+const FALLBACK = {
+  ta: `🤔 அந்த கேள்விக்கு exact answer என்னிடம் இல்ல.<br><br>இவற்றை try பண்ணுங்க:<br>• "BC/MBC scholarship" • "SC scholarship"<br>• "How to apply" • "Documents needed"<br>• "Income limit" • "All schemes"<br><br>அல்லது <b>Check Eligibility</b> page போங்க! 🎯`,
+  hi: `🤔 इस सवाल का जवाब मेरे पास नहीं है।<br><br>ये try करें:<br>• "SC scholarship" • "NMMS scholarship"<br>• "Apply kaise kare" • "Documents kya chahiye"<br>• "Income limit" • "All schemes"<br><br>या <b>Check Eligibility</b> page पर जाएं! 🎯`,
+  te: `🤔 ఆ ప్రశ్నకు నా దగ్గర సమాధానం లేదు.<br><br>ఇవి try చేయండి:<br>• "SC scholarship" • "NMMS scholarship"<br>• "Apply ela cheyyali" • "Documents emi kavali"<br>• "Income limit" • "All schemes"<br><br>లేదా <b>Check Eligibility</b> page కి వెళ్ళండి! 🎯`,
+  kn: `🤔 ಆ ಪ್ರಶ್ನೆಗೆ ನನ್ನ ಬಳಿ ಉತ್ತರವಿಲ್ಲ.<br><br>ಇವುಗಳನ್ನು try ಮಾಡಿ:<br>• "SC scholarship" • "NMMS scholarship"<br>• "Apply hege maaduvudu" • "Documents enu beku"<br>• "Income limit" • "All schemes"<br><br>ಅಥವಾ <b>Check Eligibility</b> page-ಗೆ ಹೋಗಿ! 🎯`,
+  ml: `🤔 ആ ചോദ്യത്തിന് എന്റെ കൈയ്യിൽ ഉത്തരമില്ല.<br><br>ഇവ try ചെയ്യൂ:<br>• "SC scholarship" • "NMMS scholarship"<br>• "Apply cheyyunnathu epadi" • "Documents enthu veno"<br>• "Income limit" • "All schemes"<br><br>അല്ലെങ്കിൽ <b>Check Eligibility</b> page-ൽ പോകൂ! 🎯`,
+  en: `🤔 I don't have an exact answer for that.<br><br>Try asking:<br>• "BC/MBC scholarship" • "SC scholarship"<br>• "How to apply" • "Documents needed"<br>• "Income limit" • "All schemes"<br><br>Or go to the <b>Check Eligibility</b> page! 🎯`
+};
+
+function getBotReply(text) {
+  // Always use user-selected language button (lastLang); only auto-detect if non-Latin script is typed
+  const detectedLang = detectLang(text);
+  const isNonLatinScript = /[\u0B80-\u0BFF\u0900-\u097F\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F]/.test(text);
+  const lang = isNonLatinScript ? detectedLang : lastLang;
+  const lower = text.toLowerCase();
+  for (const topic of Object.values(TOPICS)) {
+    if (topic.keys.some(k => lower.includes(k))) {
+      return topic.answers[lang] || topic.answers['en'];
+    }
+  }
+  return FALLBACK[lang] || FALLBACK['en'];
+}
+
+let chatOpen = false;
+let chatInitialized = false;
+let lastLang = 'en';
+
+const SUGS = {
+  en: ['BC/MBC scholarship?','SC scholarship','How to apply?'],
+  ta: ['BC/MBC scholarship?','SC scholarship','எப்படி apply?'],
+  hi: ['BC/MBC scholarship?','SC scholarship','Apply kaise kare?'],
+  te: ['BC/MBC scholarship?','SC scholarship','Apply ela cheyyali?'],
+  kn: ['BC/MBC scholarship?','SC scholarship','Apply hege maaduvudu?'],
+  ml: ['BC/MBC scholarship?','SC scholarship','Apply cheyyunnathu epadi?']
+};
+const PLACEHOLDERS = {
+  en:'Ask about any scheme...', ta:'Scholarship பத்தி கேளுங்க...',
+  hi:'Scholarship ke baare mein poochhen...', te:'Scholarship గురించి అడగండి...',
+  kn:'Scholarship bagge keliri...', ml:'Scholarship-നെ കുറിച്ച് ചോദിക്കൂ...'
+};
+
+function setLang(lang, btn) {
+  lastLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Update suggestions
+  const sugs = SUGS[lang] || SUGS['en'];
+  ['sug1','sug2','sug3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = sugs[i];
+  });
+  // Update placeholder
+  const inp = document.getElementById('chat-input');
+  if (inp) inp.placeholder = PLACEHOLDERS[lang] || PLACEHOLDERS['en'];
+  // Show suggestions bar again
+  const sugsBar = document.getElementById('chat-suggestions');
+  if (sugsBar) sugsBar.style.display = 'flex';
+  // If chat is open AND already initialized, greet in new lang
+  if (chatOpen && chatInitialized) {
+    addBotMessage(GREET[lang] || GREET['en']);
+  }
+}
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const win = document.getElementById('chat-window');
+  const fab = document.getElementById('chat-fab');
+  win.classList.toggle('open', chatOpen);
+  fab.textContent = chatOpen ? '×' : '💬';
+  if (chatOpen && !chatInitialized) {
+    chatInitialized = true;
+    setTimeout(() => addBotMessage(GREET[lastLang] || GREET['en']), 300);
+  }
+}
+
+function addBotMessage(html) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = `<div class="msg-bubble">${html}</div><div class="msg-time">${getTime()}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${getTime()}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('chat-suggestions').style.display = 'none';
+  addUserMessage(text);
+  // Only auto-switch language if user actually typed in a non-Latin script
+  const hasNonLatinScript = /[\u0B80-\u0BFF\u0900-\u097F\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F]/.test(text);
+  if (hasNonLatinScript) {
+    const detectedLang = detectLang(text);
+    if (detectedLang !== 'en') lastLang = detectedLang;
+  }
+  // If first real message, mark initialized
+  if (!chatInitialized) { chatInitialized = true; }
+  const msgs = document.getElementById('chat-messages');
+  const tDiv = document.createElement('div');
+  tDiv.className = 'msg bot'; tDiv.id = 'typing-indicator';
+  tDiv.innerHTML = `<div class="chat-typing"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(tDiv); msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    const t = document.getElementById('typing-indicator');
+    if (t) t.remove();
+    addBotMessage(getBotReply(text));
+  }, 600);
+}
+
+function sendSuggestion(btn) {
+  document.getElementById('chat-input').value = btn.textContent;
+  sendChat();
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+document.getElementById('chat-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+});
+</script>
+</body>
+</html>
